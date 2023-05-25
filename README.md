@@ -36,12 +36,12 @@ It is quite common for school kids to have problems doing their homework, or man
 ```mermaid
 %%{init: {'theme':'dark'}}%%
 erDiagram
-    Student ||..o{ Post : "has"
-    Post ||--o{ Response: creates
-    Response||--|{ Tutor: includes
+    Student ||--|{ Post : "post"
+    Post ||--|{ Response: has
+    Tutor ||--|{ Response: respond
     User ||--o{ Student: is
     User ||--o{ Tutor : is
-    User ||..o{ Role : contains
+    User ||--|| Role : contains
 ```
 
 ## API Specification
