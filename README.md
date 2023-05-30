@@ -38,11 +38,70 @@ It is quite common for school kids to have problems doing their homework, or man
 erDiagram
     Student ||--|{ Post : "post"
     Post ||--|{ Response: has
-    Tutor ||--|{ Response: respond
+    Post ||--|{ Comment: has
+    Response ||--|{ Comment: has
+    Tutor ||--|{ Response: reply
+    User ||--|{ Comment: comment
     User ||--o{ Student: is
     User ||--o{ Tutor : is
     User ||--|| Role : contains
 ```
+
+
+## Entity Relationship Diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+erDiagram
+    User {
+        int id PK
+        text username
+        text email
+        text first_name
+        text second_name
+        text password
+        int role_id FK
+    }
+    Post {
+        int id PK
+        text Title
+        text Description
+        int comment_id FK
+    }
+    Response {
+        int id PK
+        text Description
+        int user_id FK
+        int comment_id FK
+    }
+    Comment {
+        int id PK
+        text Description
+        int user_id FK
+    }
+    Student {
+        int id PK
+        int user_id FK
+    }
+    Tutor {
+        int id PK
+        int user_id FK
+    }
+    Role {
+        int id PK
+        text name
+    }
+    Student ||--|{ Post : "post"
+    Post ||--|{ Response: has
+    Post ||--|{ Comment: has
+    Response ||--|{ Comment: has
+    Tutor ||--|{ Response: reply
+    User ||--|{ Comment: comment
+    User ||--o{ Student: is
+    User ||--o{ Tutor : is
+    User ||--|| Role : contains
+```
+
 
 ## API Specification
 
