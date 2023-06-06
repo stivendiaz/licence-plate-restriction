@@ -1,4 +1,7 @@
 import { Router } from "express";
+import { validation } from "../utils";
+import { check } from "express-validator";
+import { userController } from "../controller/user.controller";
 
 const userRouter = Router();
 
@@ -60,9 +63,29 @@ const userRouter = Router();
  *       201:
  *         description: User Created
  */
-userRouter.route("/").post((req, res) => {
-  res.send("Create");
-});
+userRouter.route("/").post(
+  [
+    check("email")
+      .isLength({ min: 3 })
+      .withMessage("the email must have minimum length of 3")
+      .isEmail()
+      .withMessage("the email must be in a valid email format")
+      .trim(),
+    check("username")
+      .isLength({ min: 3 })
+      .withMessage("the username must have minimum length of 3")
+      .trim(),
+    check("password")
+      .isLength({ min: 8, max: 15 })
+      .withMessage("the password should have min and max length between 8-15")
+      .matches(/\d/)
+      .withMessage("the password should have at least one number")
+      .matches(/[!@#$%^&*(),.?":{}|<>]/)
+      .withMessage("the password should have at least one special character"),
+  ],
+  validation.validate,
+  userController.createUser
+);
 
 /**
  * @swagger
@@ -81,9 +104,7 @@ userRouter.route("/").post((req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-userRouter.route("/").get((req, res) => {
-  res.send("Hello World!");
-});
+userRouter.route("/").get(userController.getAllUsers);
 
 /**
  * @swagger
@@ -110,9 +131,7 @@ userRouter.route("/").get((req, res) => {
  *       204:
  *         description: No content
  */
-userRouter.route("/:userId").get((req, res) => {
-  res.send("Get Single" + req.params.userId);
-});
+userRouter.route("/:user_id(\\d+)").get(userController.getUserById);
 
 /**
  * @swagger
@@ -138,9 +157,28 @@ userRouter.route("/:userId").get((req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-userRouter.route("/:userId").put((req, res) => {
-  res.send("Update" + req.params.userId);
-});
+userRouter.route("/:user_id(\\d+)").put(
+  [
+    check("email")
+      .isLength({ min: 3 })
+      .isEmail()
+      .withMessage("the email must have minimum length of 3")
+      .trim(),
+    check("username")
+      .isLength({ min: 3 })
+      .withMessage("the username must have minimum length of 3")
+      .trim(),
+    check("password")
+      .isLength({ min: 8, max: 15 })
+      .withMessage("the password should have min and max length between 8-15")
+      .matches(/\d/)
+      .withMessage("the password should have at least one number")
+      .matches(/[!@#$%^&*(),.?":{}|<>]/)
+      .withMessage("the password should have at least one special character"),
+  ],
+  validation.validate,
+  userController.updateUser
+);
 
 /**
  * @swagger
@@ -160,8 +198,6 @@ userRouter.route("/:userId").put((req, res) => {
  *       204:
  *         description: The user has been deleted.
  */
-userRouter.route("/:userId").delete((req, res) => {
-  res.send("Delete" + req.params.userId);
-});
+userRouter.route("/:id").delete(userController.deleteUserById);
 
 export { userRouter };
