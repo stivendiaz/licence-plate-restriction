@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model currency {
+  id      Int       @id(map: "currency_pk") @default(autoincrement())
+  name    String?
+  prefix  String?
+  expense expense[]
+}
+
+model event {
+  id         Int          @id(map: "event_pk") @default(autoincrement())
+  name       String?
+  start_date DateTime?    @db.Date
+  end_date   DateTime?    @db.Date
+  type_id    Int?
+  type       type?        @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_type_fk")
+  event_user event_user[]
+  expense    expense[]
+}
+
+model event_user {
+  id       Int      @id(map: "event_user_pk") @default(autoincrement())
+  user_id  Int?
+  event_id Int?
+  is_admin Boolean?
+  event    event?   @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_user_event_fk")
+  user     user?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_user_user_fk")
+}
+
+model expense {
+  id           Int            @id(map: "expense_pk") @default(autoincrement())
+  description  String?
+  value        Float?
+  date         DateTime?      @db.Timestamp(6)
+  currency_id  Int?
+  event_id     Int?
+  currency     currency?      @relation(fields: [currency_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expense_currency_fk")
+  event        event?         @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expense_event_fk")
+  user_expense user_expense[]
+}
+
+model flyway_schema_history {
+  installed_rank Int      @id(map: "flyway_schema_history_pk")
+  version        String?  @db.VarChar(50)
+  description    String   @db.VarChar(200)
+  type           String   @db.VarChar(20)
+  script         String   @db.VarChar(1000)
+  checksum       Int?
+  installed_by   String   @db.VarChar(100)
+  installed_on   DateTime @default(now()) @db.Timestamp(6)
+  execution_time Int
+  success        Boolean
+
+  @@index([success], map: "flyway_schema_history_s_idx")
+}
+
+model type {
+  id    Int     @id(map: "type_pk") @default(autoincrement())
+  name  String?
+  event event[]
+}
+
+model user {
+  id           Int            @id(map: "user_pk") @default(autoincrement())
+  username     String?
+  email        String?
+  first_name   String?
+  second_name  String?
+  password     String?
+  event_user   event_user[]
+  user_expense user_expense[]
+}
+
+model user_expense {
+  id         Int      @id(map: "user_expense_pk") @default(autoincrement())
+  user_id    Int?
+  expense_id Int?
+  is_owner   Boolean?
+  ratio      Float?
+  paid       Boolean?
+  expense    expense? @relation(fields: [expense_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_expense_expense_fk")
+  user       user?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_expense_user_fk")
+}
