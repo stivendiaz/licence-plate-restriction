@@ -2,6 +2,7 @@ import express, { Request, Response, json, urlencoded } from "express";
 import swaggerUI from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import { userRouter } from "./routers/index";
+import { verifyToken } from "./middlewares/auth";
 
 const swaggerDefinition = {
   openapi: "3.0.0",
@@ -34,9 +35,11 @@ app.use("/swagger.json", (req: Request, res: Response) =>
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
+app.all("*", verifyToken);
+
 app.use("/user", userRouter);
 
-app.get("/", (req: Request, res: Response) => res.send("Hello World"));
+app.get("/ping", (req: Request, res: Response) => res.send("pong"));
 
 app.listen(port, () =>
   console.log(`🚀 Application running on: http://localhost:${port}`)
