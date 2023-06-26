@@ -10,13 +10,15 @@ CREATE TABLE IF NOT EXISTS public.users (
     CONSTRAINT users_role_id_fk FOREIGN KEY (role_id) REFERENCES public.role (id)
 );
 
--- Create 'posts' table
-CREATE TABLE IF NOT EXISTS public.posts (
-    id SERIAL CONSTRAINT posts_pk PRIMARY KEY,
+-- Create 'questions' table
+CREATE TABLE IF NOT EXISTS public.questions (
+    id SERIAL CONSTRAINT questions_pk PRIMARY KEY,
     title TEXT,
     description TEXT,
+    user_id INT,
     comment_id INT,
-    CONSTRAINT posts_comment_id_fk FOREIGN KEY (comment_id) REFERENCES public.comment (id)
+    CONSTRAINT responses_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users (id),
+    CONSTRAINT questions_comment_id_fk FOREIGN KEY (comment_id) REFERENCES public.comment (id)
 );
 
 -- Create 'responses' table

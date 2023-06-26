@@ -15,10 +15,12 @@ VALUES ('Comment Description', 2);
 -- Insert into 'users' table
 INSERT INTO public.users (username, email, first_name, second_name, password, role_id)
 VALUES ('Admin', 'a@a.com', 'first_name', 'second_name', 'password', 1);
+INSERT INTO public.users (username, email, first_name, second_name, password, role_id)
+VALUES ('Admin2', 'b@b.com', 'first_name', 'second_name', 'password', 2);
 
 -- Insert into 'students' table
 INSERT INTO public.students (user_id)
-VALUES (1);
+VALUES (2);
 
 -- Insert into 'tutors' table
 INSERT INTO public.tutors (user_id)
