@@ -14,8 +14,8 @@ services:
   flyway:
     image: flyway/flyway
     command:
-      -url=jdbc:postgresql://localhost:5433/questionsandanswers -schemas=public -user=postgres
-      -password=password -connectRetries=60 migrate
+      -url=jdbc:postgresql://db:5432/questionsandanswers -schemas=public -user=postgres
+      -password=password -connectRetries=5 migrate
     volumes:
       - ./database:/flyway/sql
       - ./database:/flyway/conf
