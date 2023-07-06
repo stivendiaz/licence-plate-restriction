@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 async function createUser(req: Request, res: Response) {
   const { email, username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({
+  const user = await prisma.users.create({
     data: {
       email: email,
       username: username,
@@ -16,7 +16,7 @@ async function createUser(req: Request, res: Response) {
 }
 
 async function getAllUsers(req: Request, res: Response) {
-  const users = await prisma.user.findMany({
+  const users = await prisma.users.findMany({
     select: { email: true, id: true },
   });
   if (users && users.length > 0) {
@@ -30,7 +30,7 @@ async function updateUser(req: Request, res: Response) {
   const { user_id } = req.params;
   const { email, username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  await prisma.user.update({
+  await prisma.users.update({
     where: {
       id: parseInt(user_id),
     },
@@ -45,7 +45,7 @@ async function updateUser(req: Request, res: Response) {
 
 async function getUserById(req: Request, res: Response) {
   const user_id = parseInt(req.params["id"]);
-  const getUser = await prisma.user.findUnique({
+  const getUser = await prisma.users.findUnique({
     where: { id: user_id },
   });
   if (getUser) {
@@ -58,7 +58,7 @@ async function getUserById(req: Request, res: Response) {
 async function deleteUserById(req: Request, res: Response) {
   try {
     const user_Id = parseInt(req.params["id"]);
-    await prisma.user.delete({
+    await prisma.users.delete({
       where: {
         id: user_Id,
       },
