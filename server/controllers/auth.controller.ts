@@ -6,7 +6,7 @@ import { prisma } from "../utils/prisma";
 async function authenticate(req: Request, res: Response) {
   const { email, password } = req.body;
 
-  const users = await prisma.user.findMany({
+  const users = await prisma.users.findMany({
     where: {
       email: email,
     },
@@ -36,7 +36,7 @@ async function authenticate(req: Request, res: Response) {
 async function refresh(req: Request, res: Response) {
   const userId = res.locals.user as number;
 
-  var user = await prisma.user.findUnique({
+  var user = await prisma.users.findUnique({
     where: {
       id: userId,
     },

@@ -7,7 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model answers {
+  id          Int        @id(map: "answers_pk") @default(autoincrement())
+  description String?
+  user_id     Int?
+  comment_id  Int?
+  question_id Int?
+  comments    comments?  @relation(fields: [comment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_comment_id_fk")
+  questions   questions? @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_question_id_fk")
+  users       users?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_user_id_fk")
+}
 
+model comments {
+  id          Int         @id(map: "comments_pk") @default(autoincrement())
+  description String?
+  user_id     Int?
+  answers     answers[]
+  users       users?      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comments_user_id_fk")
+  questions   questions[]
+}
 
 model flyway_schema_history {
   installed_rank Int      @id(map: "flyway_schema_history_pk")
@@ -24,21 +42,47 @@ model flyway_schema_history {
   @@index([success], map: "flyway_schema_history_s_idx")
 }
 
-model user {
-  id           Int            @id(map: "user_pk") @default(autoincrement())
-  username     String?
-  email        String?
-  first_name   String?
-  second_name  String?
-  password     String?
-  event_user   event_user[]
-  user_expense user_expense[]
+model questions {
+  id          Int       @id(map: "questions_pk") @default(autoincrement())
+  title       String?
+  description String?
+  user_id     Int?
+  comment_id  Int?
+  answers     answers[]
+  comments    comments? @relation(fields: [comment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "questions_comment_id_fk")
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "questions_user_id_fk")
 }
 
-model question {
-  id           Int            @id(map: "question_pk") @default(autoincrement())
-  title        String?
-  description  String?
-  user_id      Int
-  user         user        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_user_id_fk")
+model roles {
+  id    Int     @id(map: "roles_pk") @default(autoincrement())
+  name  String?
+  users users[]
+}
+
+model students {
+  id      Int    @id(map: "students_pk") @default(autoincrement())
+  user_id Int?
+  users   users? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "students_user_id_fk")
+}
+
+model tutors {
+  id      Int    @id(map: "tutors_pk") @default(autoincrement())
+  user_id Int?
+  users   users? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tutors_user_id_fk")
+}
+
+model users {
+  id          Int         @id(map: "users_pk") @default(autoincrement())
+  username    String?
+  email       String?
+  first_name  String?
+  second_name String?
+  password    String?
+  role_id     Int?
+  answers     answers[]
+  comments    comments[]
+  questions   questions[]
+  students    students[]
+  tutors      tutors[]
+  roles       roles?      @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_fk")
 }

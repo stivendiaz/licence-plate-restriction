@@ -1,23 +1,23 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
-import bcrypt from "bcrypt";
 
 async function createQuestion(req: Request, res: Response) {
   const { title, description, userId } = req.body;
-  const question = await prisma.question.create({
+  const question = await prisma.questions.create({
     data: {
       title: title,
       description: description,
-      user: { connect: { user_id: userId } },
+      users: { connect: { id: userId } },
     },
   });
   res.status(201).json(question);
 }
 
 async function getAllQuestions(req: Request, res: Response) {
-  const questions = await prisma.question.findMany({
-    select: { title: true, id: true },
+  const questions = await prisma.questions.findMany({
+    select: { title: true, id: true, description: true },
   });
+
   if (questions && questions.length > 0) {
     res.status(200).json(questions);
   } else {
@@ -28,7 +28,7 @@ async function getAllQuestions(req: Request, res: Response) {
 async function updateQuestion(req: Request, res: Response) {
   const { question_id } = req.params;
   const { title, description } = req.body;
-  await prisma.question.update({
+  await prisma.questions.update({
     where: {
       id: parseInt(question_id),
     },
@@ -42,7 +42,7 @@ async function updateQuestion(req: Request, res: Response) {
 
 async function getQuestionById(req: Request, res: Response) {
   const question_id = parseInt(req.params["id"]);
-  const getQuestion = await prisma.question.findUnique({
+  const getQuestion = await prisma.questions.findUnique({
     where: { id: question_id },
   });
   if (getQuestion) {
@@ -55,7 +55,7 @@ async function getQuestionById(req: Request, res: Response) {
 async function deleteQuestionById(req: Request, res: Response) {
   try {
     const question_Id = parseInt(req.params["id"]);
-    await prisma.question.delete({
+    await prisma.questions.delete({
       where: {
         id: question_Id,
       },

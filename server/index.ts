@@ -1,7 +1,7 @@
 import express, { Request, Response, json, urlencoded } from "express";
 import swaggerUI from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
-import { userRouter } from "./routers/index";
+import { questionsRouter, userRouter } from "./routers/index";
 import { verifyToken } from "./middlewares/auth.middleware";
 
 const swaggerDefinition = {
@@ -35,9 +35,10 @@ app.use("/swagger.json", (req: Request, res: Response) =>
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-app.all("*", verifyToken);
+//app.all("*", verifyToken);
 
 app.use("/user", userRouter);
+app.use("/question", questionsRouter);
 
 app.get("/ping", (req: Request, res: Response) => res.send("pong"));
 
