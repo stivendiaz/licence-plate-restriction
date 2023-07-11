@@ -41,9 +41,9 @@ async function updateQuestion(req: Request, res: Response) {
 }
 
 async function getQuestionById(req: Request, res: Response) {
-  const question_id = parseInt(req.params["id"]);
+  const questionId = parseInt(req.params["id"]);
   const getQuestion = await prisma.questions.findUnique({
-    where: { id: question_id },
+    where: { id: questionId },
   });
   if (getQuestion) {
     res.status(200).json(getQuestion);
@@ -54,10 +54,10 @@ async function getQuestionById(req: Request, res: Response) {
 
 async function deleteQuestionById(req: Request, res: Response) {
   try {
-    const question_Id = parseInt(req.params["id"]);
+    const questionId = parseInt(req.params["id"]);
     await prisma.questions.delete({
       where: {
-        id: question_Id,
+        id: questionId,
       },
     });
     return res.status(204);

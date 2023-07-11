@@ -37,8 +37,8 @@ app.use(urlencoded({ extended: true }));
 
 //app.all("*", verifyToken);
 
-app.use("/user", userRouter);
-app.use("/question", questionsRouter);
+app.use("/users", userRouter);
+app.use("/questions", questionsRouter);
 
 app.get("/ping", (req: Request, res: Response) => res.send("pong"));
 
