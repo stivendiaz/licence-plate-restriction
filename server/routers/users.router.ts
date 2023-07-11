@@ -44,7 +44,7 @@ const userRouter = Router();
 
 /**
  * @swagger
- * /user:
+ * /users:
  *   post:
  *     tags: [
  *       user
@@ -89,7 +89,7 @@ userRouter.route("/").post(
 
 /**
  * @swagger
- * /user:
+ * /users:
  *   get:
  *     description: Retrieves a user object array.
  *     tags:
@@ -108,7 +108,7 @@ userRouter.route("/").get(userController.getAllUsers);
 
 /**
  * @swagger
- * /user/{userId}:
+ * /users/{userId}:
  *   get:
  *     description: Retrieves a single user object based on its id.
  *     tags: [
@@ -135,7 +135,7 @@ userRouter.route("/:user_id(\\d+)").get(userController.getUserById);
 
 /**
  * @swagger
- * /user/{userId}:
+ * /users/{userId}:
  *   put:
  *     description: Updates a user object based on its id.
  *     tags:
@@ -182,7 +182,7 @@ userRouter.route("/:user_id(\\d+)").put(
 
 /**
  * @swagger
- * /user/{userId}:
+ * /users/{userId}:
  *   delete:
  *     description: Deletes a user object based on its id.
  *     tags:

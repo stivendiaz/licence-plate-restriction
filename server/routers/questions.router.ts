@@ -2,8 +2,9 @@ import { Router } from "express";
 import { validation } from "../utils";
 import { check } from "express-validator";
 import { questionController } from "../controllers/question.controller";
+import { answersRouter } from "./answers.router";
 
-const questionsRouter = Router();
+const questionsRouter = Router({ mergeParams: true });
 
 /**
  * @swagger
@@ -28,7 +29,7 @@ const questionsRouter = Router();
 
 /**
  * @swagger
- * /question:
+ * /questions:
  *   post:
  *     tags: [
  *       question
@@ -66,7 +67,7 @@ questionsRouter
 
 /**
  * @swagger
- * /question:
+ * /questions:
  *   get:
  *     description: Retrieves a question object array.
  *     tags:
@@ -85,7 +86,7 @@ questionsRouter.route("/").get(questionController.getAllQuestions);
 
 /**
  * @swagger
- * /question/{questionId}:
+ * /questions/{questionId}:
  *   get:
  *     description: Retrieves a single question object based on its id.
  *     tags: [
@@ -109,12 +110,12 @@ questionsRouter.route("/").get(questionController.getAllQuestions);
  *         description: No content
  */
 questionsRouter
-  .route("/:question_id(\\d+)")
+  .route("/:questionId(\\d+)")
   .get(questionController.getQuestionById);
 
 /**
  * @swagger
- * /question/{questionId}:
+ * /questions/{questionId}:
  *   put:
  *     description: Updates a question object based on its id.
  *     tags:
@@ -137,7 +138,7 @@ questionsRouter
  *                 $ref: '#/components/schemas/Question'
  */
 questionsRouter
-  .route("/:question_id(\\d+)")
+  .route("/:questionId(\\d+)")
   .put(
     [
       check("title")
@@ -155,7 +156,7 @@ questionsRouter
 
 /**
  * @swagger
- * /question/{questionId}:
+ * /questions/{questionId}:
  *   delete:
  *     description: Deletes a question object based on its id.
  *     tags:
@@ -171,6 +172,10 @@ questionsRouter
  *       204:
  *         description: The question has been deleted.
  */
-questionsRouter.route("/:id").delete(questionController.deleteQuestionById);
+questionsRouter
+  .route("/:questionId(\\d+)")
+  .delete(questionController.deleteQuestionById);
+
+questionsRouter.use("/:questionId(\\d+)/answers", answersRouter);
 
 export { questionsRouter };
